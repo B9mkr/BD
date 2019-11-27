@@ -87,6 +87,22 @@ Wyświetl datę ostatniego egzaminu przeprowadzonego przez wykładowcę o nazwis
 SELECT MAX(eg.data) AS data
 FROM egzaminy AS eg, wykladowcy AS wy
 WHERE eg.`id-wykladowca`=wy.`id-wykladowcy` AND wy.nazwisko='Miłosz'
+
+select `id-student`, `id-przedmiot`
+from egzaminy
+where data = (
+    select min(data)
+    from egzaminy
+)
+
+select `id-student`, `id-przedmiot`
+from egzaminy
+where data in(
+    select data from egzaminy
+    where `id-student` ='0000061'
+)
+and `id-student`<>'0000061'
+
 ```
 
 ### ZADANIE 11
@@ -132,6 +148,8 @@ WHERE eg.`id-przedmiot`=(
 ORDER BY pr.`nazwa-p`, os.`id-osrodek`
 ```
 
+---
+
 ## DQL – SELECT + INNER/OUTER JOIN (Lab06.pdf)
 
 ### ZADANIE 1
@@ -152,14 +170,15 @@ WHERE eg.`id-osrodek`=(
 Ile egzaminów zdano w Instytucie Informatyki?
 
 ```sql
-SELECT COUNT(eg.`id-osrodek`) AS 'Egzaminów zdano'
-FROM osrodki AS os, egzaminy AS eg
-WHERE eg.`id-osrodek`=(
+SELECT COUNT(*) AS 'Ilość egzaminów znanych w Instytuczie Informatyki'
+FROM egzaminy e
+WHERE e.`id-osrodek`=(
         SELECT DISTINCT osrodki.`id-osrodek` 
         FROM osrodki 
         WHERE osrodki.`nazwa-o`='Instytut Informatyki PL'
 	)
-    AND eg.zdal=1
+AND e.zdal=1;
+
 ```
 
 ### ZADANIE 3
@@ -212,3 +231,75 @@ Wyświetl w jednym wierszu liczbę przeprowadzonych egzaminów, najmniejszy i na
 ### ZADANIE 14
 
 Dla każdego przedmiotu (wyświetlić nazwę) podaj liczbę przeprowadzonych egzaminów, a także daty pierwszego i ostatniego egzaminu
+
+## DQL – Podzapytania bez i z grupowaniem(Lab08.pdf)
+
+```sql
+-- zad6
+select `id-student`, `id-przedmiot`
+from egzaminy
+where data > (
+    	SELECT max(data)
+    from egzaminy 
+    where `id-przedmiot`=1
+    )
+    GROUP BY `id-przedmiot`
+
+-- zad9a(limit)
+select `id-wykladowca`,count(*)
+from egzaminy
+GROUP BY `id-wykladowca` 
+ORDER BY 2 DESC
+limit 1
+-- rownum domumentacja w oraclu
+
+-- zad9b
+select `id-wykladowca`, count(*)
+from egzaminy
+GROUP BY `id-wykladowca` 
+having count(*)=(
+    SELECT MAX(count(*))
+    from egzaminy
+    group by `id-wykladowca`
+    )
+
+-- zad9c
+select `id-wykladowca`, count(*)
+from egzaminy
+GROUP BY `id-wykladowca` 
+having count(*)=(
+    SELECT MAX(w.liczba)
+    from 
+    	(select COUNT(*) liczba
+         from egzaminy group by `id-wykladowca`) w
+    )
+
+-- zad4
+select `id-wykladowca`, data, `id-osrodek`
+from egzaminy
+where data in(
+    select max(data)
+    from egzaminy 
+	group by `id-wykladowca`
+	)
+	order by `data`
+
+-- zad?a
+select `id-wykladowca`, data, `id-osrodek`
+from egzaminy
+where (`id-wykladowca`, data) in (SELECT `id-wykladowca`, max(data)
+FROM egzaminy
+group by `id-wykladowca`)
+ORDER by data
+
+-- zad?b
+select `id-wykladowca`, data, `id-osrodek`
+from egzaminy e
+where data in (
+    SELECT MAX(data)
+    FROM egzaminy
+    WHERE `id-wykladowca`=`e`.`id-wykladowca`
+    )
+    ORDER by data
+
+```
