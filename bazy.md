@@ -359,7 +359,7 @@ where data in (
 
 ## G1 b
 
-### Zadanie 1
+### ZADANIE 1
 
 Wyświetl datę ostatniego egzaminu przeprowadzonego w ośrodku o nazwie "CKMP".
 
@@ -372,7 +372,7 @@ WHERE e.`id-osrodek` = (
     WHERE `nazwa-o` = 'Instytut informatyki PL')
 ```
 
-### Zadanie 2
+### ZADANIE 2
 
 Wyszukaj egzaminy, gdzie w polu 'zdal' wprowadzono wartość null. Wyświetl datę, nazwisko i imię studenta, numer egzaminu. Posortuj malejąco po dacie.
 
@@ -384,7 +384,7 @@ WHERE e.zdal = 0
 ORDER BY data DESC
 ```
 
-### Zadanie 3
+### ZADANIE 3
 
 Wyświetl liczbę egzaminów przeprowadzonhych przez wykładowcę o nazwisku 'Szymczyk'.
 
@@ -396,7 +396,7 @@ WHERE w.`nazwisko` = 'Kęsik'
 GROUP BY w.`nazwisko`
 ```
 
-### Zadanie 4
+### ZADANIE 4
 
 Wyświetl, ilu wykładowców przeprowadzało egzaminy z przedmiotu 'Bazy danych'?
 
@@ -409,7 +409,7 @@ GROUP BY p.`nazwa-p`
 HAVING p.`nazwa-p` = 'Bazy danych'
 ```
 
-### Zadanie 5
+### ZADANIE 5
 
 Wyświetl nazwiska i imiona studentów, którzy jeszcze nie zdawali egzaminu.
 
@@ -420,7 +420,7 @@ LEFT JOIN egzaminy e ON e.`id-student` = s.`id-student`
 WHERE e.`id-student` IS NULL
 ```
 
-### Zadanie 6
+### ZADANIE 6
 
 Wyświetl nazwiska i imiona wykładowców z Lublina, którzy prowadzili egzaminy tylko z 4 przedmiotów.
 
@@ -434,7 +434,7 @@ GROUP BY `id-wykladowcy`
 HAVING COUNT(*) = 4;
 ```
 
-### Zadanie 7
+### ZADANIE 7
 
 Wyświetl nazwiska i indentyfikatory wykładowców, którzy przeprowadzili więcej egzaminów niż egzaminator o identyfikatorze 4.
 
@@ -469,31 +469,31 @@ GROUP BY e.`id-wykladowcy`
 
 ## G2 c
 
-### Zadanie 1
+### ZADANIE 1
 
 Wyszukaj dane o niezdanych egzaminach studentów, których nazwiska rozpoczynają się literą 'S'. Wyświetl nazwę przedmiotu, datę egzaminu, a także nazwisko i imię egzaminatora. Posortuj malejąco względem nazwy przedmiotu.
 
-### Zadanie 2
+### ZADANIE 2
 
 Wyświetl datę pierwszego egzaminu z przedmotu 'Bazy danych'. Nadaj etykeitę 'Pierwszy-egzamin'.
 
-### Zadanie 3
+### ZADANIE 3
 
 Wyszukaj ośrodek, w którym przeprowadzono najminiej egzaminów. Wyświetl tylko nazwę ośrodka.
 
-### Zadanie 4
+### ZADANIE 4
 
 Wyświetl dane o egzaminach, które odbyły się po ostatnim egzaminie z przedmiotu o indeftyfikatorze 1.
 
-### Zadanie 5
+### ZADANIE 5
 
 Ile egzaminów przeprowadzono w poszczególnych ośrodkach? Wyświetl nazwę ośrodka i liczbę egzaminów. Weź pod uwagę wszystkie ośrodki (tzn. wszystkie ośrodki z tabeli 'osrodki').
 
-### Zadanie 6
+### ZADANIE 6
 
 Wyświetl nazwiska i imiona studentów, którzy nie zdali 4 egzaminów.
 
-### Zadanie 7
+### ZADANIE 7
 
 Wyświetl datę ostatniego egzaminu przeprowadzonego przez Marka Miłósza.
 
@@ -600,4 +600,225 @@ Zad11
 
 
 Zad12
+```
+
+---
+
+# DML (Lab10.pdf)
+
+### ZADANIE 1
+
+Do tabeli Studenci dołącz informację o sobie. Wypełnij wszystkie pola.
+
+```sql
+INSERT INTO studenci (`id-student`, `nazwisko`, `imie`, `data-ur`, `miejsce`, `PESEL`, `kod-poczta`, `miasto`, `ulica`, `numer`, `tel`, `fax`, `e-mail`, `nr-dyplomu`, `data-dyplomu`)
+VALUES (1002002, 'Mushka', 'Borys', '1999-09-18', 'Lublin', 99091883739, 20618, 'Lublin', 'Nadbystrzycka', 44, 815341148, '', 'mushka.borys99@gmail.com', '', '')
+
+-- UPDATE `studenci` SET `data-ur` = '1999-08-18' WHERE `studenci`.`id-student` = '1002002';
+```
+
+### ZADANIE 2
+
+Do tabeli Egzaminy dodaj informację o dwóch zdawanych przez siebie egzaminach w Instytucie Informatyki.
+
+```sql
+INSERT INTO egzaminy (`nr-egz`, `id-student`, `id-przedmiot`, `id-wykladowca`, `data`, `id-osrodek`, `zdal`)
+VALUES (NULL, '01002002', '9 - Sieci rozległe', '0009-0009', '2002-3-15', '1 - Instytut Informatyki PL', 1);
+
+INSERT INTO egzaminy (`nr-egz`, `id-student`, `id-przedmiot`, `id-wykladowca`, `data`, `id-osrodek`, `zdal`)
+VALUES (NULL, 1002002, 8, 0011, '2002-3-23', 1, 1);
+5,10 id przedmiotu
+```
+
+### ZADANIE 3
+
+Do tabeli Przedmioty dodaj – przy pomocy jednego zapytania – dane o trzech przedmiotach:
+Multimedia, Grafika 3D, Dydaktyka Informatyki.
+
+### ZADANIE 4
+
+Wstawić do tabeli Wykladowcy dane o nowym wykladowcy. Dane do wstawienia są następujące:
+identyfikator – 0070, nazwisko – Bond, imię – James, miasto – Londyn.
+
+```sql
+
+```
+
+### ZADANIE 5
+
+W tabeli Wykladowcy zmodyfikować dane o wykładowcy, który ma nazwisko Bond, wstawiając do
+kolumny E_mail wartość bond@gmail.com a do kolumny Telefon wartość 777777777.
+
+```sql
+UPDATE tabela
+SET kol1 = wart1, kol2 = wart2,..., koln = wartn
+[ WHERE warunek ]
+```
+
+### ZADANIE 6
+
+Zastąp dane egzaminu o identyfikatorze 1 danymi najpóźniej zdawanego egzaminu.
+
+```sql
+UPDATE tabela
+SET (kol1, kol2) = (SELECT koli, kolj FROM tabela2)
+[ WHERE warunek ]
+```
+
+### ZADANIE 7
+
+Zaktualizuj pole Fax w tabeli Wykladowcy tak, aby wszyscy wykładowcy, którzy nie mieszkają w
+Lublinie mieli ten sam numer faksu – 22112222.
+
+### ZADANIE 8
+
+W tabeli Egzaminy zaktualizuj dane egzaminów, które odbyły się po 1 maja 1998 i były zdawane w
+Katedrze Energetyki i Elektrochemii, przypisując je do Instytutu Informatyki.
+
+### ZADANIE 9
+
+W tabeli Egzaminy zmodyfikować informacje o wykładowcach, którzy przeprowadzili egzaminy w
+ośrodku o nazwie 'Centrum Informatyczne PL' . Zastąpić identyfikator wykładowcy, przypisanego do
+egzaminów przeprowadzonych w ośrodku o tej nazwie, identyfikatorem 0004.
+
+### ZADANIE 10
+
+Studentom, którzy w poprzednim zadaniu uzyskali dyplom, zaktualizuj pole data-dyplomu na wartość
+odpowiadającą dzisiejszej dacie.
+
+### ZADANIE 11
+
+W phpMyAdmin do tabeli Studenci dodaj kolumnę do przechowania numeru indeksu. Napisz
+zapytanie, które wszystkim studentom, którzy zdali przynajmniej jeden egzamin w Instytucie
+Informatyki, przypisze numer dyplomu do pola przechowującego numer indeksu.
+
+### ZADANIE 12
+
+Wstaw dane studenta, który zdał najwięcej egzaminów, do tabeli Wykładowcy.
+
+### ZADANIE 13
+
+Utwórz w phpMyAdmin pustą tabelę o nazwie ‘Kopia_przedmioty’ o strukturze tabeli przedmioty.
+Skopiuj do niej przedmioty o identyfikatorach poniżej wartości 10.
+
+### ZADANIE 14
+
+Jako datę urodzin wykładowcy nazwiskiem Bond ustaw datę pierwszego przeprowadzonego
+egzaminu.
+
+```sql
+UPDATE tabela
+SET kol1 = (SELECT koli FROM tabela2)
+[ WHERE warunek ]
+```
+---
+
+# DML.pdf
+
+Najpierw chcę:
+
+```sql
+delete from egzaminy e
+where `id-przedmiot`=1 and `id-osrodek`=1
+and `id-wykladowca`='0004'
+```
+
+Ale teraz chciałbym usunąć po nazwie ośrodka:
+1. Nie mogę zrobić
+
+```sql
+delete from egzaminy e
+inner join osrodki o on e.`id-osrodek`=o.`id-osrodek`
+where `id-przedmiot`=1 and `nazwa-o`='Instytut Informatyki PL'
+and `id-wykladowca`='0004'
+```
+
+2. Nie działa składnia oracle
+
+```sql
+delete from egzaminy
+ where `nr-egz` in (
+ select `nr-egz`
+ from egzaminy e
+inner join osrodki o on e.`id-osrodek`=o.`id-osrodek`
+ where e.`id-przedmiot`=1 and
+o.`nazwa-o`='Instytut Informatyki PL' and
+e.`id-wykladowca`='0004'
+ )
+```
+
+3. Działa za to:
+
+```sql
+delete from egzaminy
+where `nr-egz` in (
+ select al.`nr-egz`
+ from (
+ select `nr-egz`
+ from egzaminy e
+ inner join osrodki o on e.`id-osrodek`=o.`id-osrodek`
+ where e.`id-przedmiot`=1 and
+ o.`nazwa-o`='Instytut Informatyki PL' and
+ e.`id-wykladowca`='0004'
+ ) as al
+ )
+```
+
+4. Kolejny sposób, to:
+
+```sql
+delete e from egzaminy e
+inner join osrodki o on e.`id-osrodek`=o.`id-osrodek`
+where e.`id-przedmiot`=1 and
+o.`nazwa-o`='Instytut Informatyki PL' and
+e.`id-wykladowca`='0004'
+---------------
+```
+
+### UPDATE bez podzapytania
+
+```sql
+update egzaminy e
+inner join osrodki o on e.`id-osrodek`=o.`id-osrodek`
+set e.zdal=1
+where e.`id-przedmiot`=1 and
+o.`nazwa-o`='Instytut Informatyki PL' and
+e.`id-wykladowca`='0004'
+-----------------------------------
+```
+
+### UPDATE MULTIPLE COLUMNS (ZAD. 6)
+1. Dobre rozwiązanie
+
+```sql
+update egzaminy e, (
+select *
+from egzaminy
+where data=(
+select max(data)
+from egzaminy)
+limit 1) a
+set e.zdal=a.zdal,
+ e.`id-przedmiot`=a.`id-przedmiot`,
+ e.data=a.data,
+ e.`id-student`=a.`id-student`
+where e.`nr-egz`=4
+```
+
+2. Inne przypadki
+
+```sql
+update egzaminy
+set zdal=(select * from (
+select zdal
+from egzaminy
+where `nr-egz`=333) asal
+ )
+where `nr-egz`=3
+update egzaminy e, (select * from egzaminy where `nr-egz`=333) a
+set e.zdal=a.zdal,
+e.`id-przedmiot`=a.`id-przedmiot`,
+e.data=a.data,
+e.`id-student`=a.`id-student`
+where e.`nr-egz`=4
 ```
