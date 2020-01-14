@@ -1,0 +1,118 @@
+Zad3
+INSERT INTO `przedmioty` (`nazwa-p`) 
+VALUES 
+("Multimedia"), 
+("Grafika 3D"),
+("Dydaktyka Informatyki")
+
+Zad4
+INSERT INTO wykladowcy(`id-wykladowcy`, `nazwisko`, `imie`, miasto) 
+VALUES ("0070", "Bond", "James", "London")
+
+Zad5
+UPDATE wykladowcy SET telefon="777777777" WHERE `id-wykladowcy` = "0070"
+
+Zad6
+update egzaminy e, (
+select *
+from egzaminy
+where data=(
+select max(data)
+from egzaminy)
+limit 1)  a
+set e.zdal=a.zdal,
+ e.`id-przedmiot`=a.`id-przedmiot`,
+ e.data=a.data,
+ e.`id-student`=a.`id-student`,
+`e`.`id-osrodek` = a.`id-osrodek`,
+ e.zdal = a.zdal
+where e.`nr-egz`=1
+
+Zad7
+UPDATE wykladowcy w
+SET w.fax = "22112222"
+WHERE w.miasto != "Lublin"
+
+Zad8
+UPDATE egzaminy e, 
+(SELECT `id-osrodek`  FROM osrodki
+    WHERE `nazwa-o` = "Katedra Energetyki i Elektrochemii" LIMIT 1) AS Energia,
+    (SELECT `id-osrodek`  FROM osrodki
+    WHERE `nazwa-o` = "Instytut Informatyki PL" LIMIT 1) AS Informatyka
+SET `e`.`id-osrodek` = Informatyka.`id-osrodek`
+WHERE e.data > "1998-06-01" AND 
+e.`id-osrodek` = Energia.`id-osrodek` 
+    
+
+Zad9
+UPDATE egzaminy e, 
+(SELECT `id-wykladowcy`FROM wykladowcy 
+ INNER JOIN egzaminy ON `egzaminy`.`id-wykladowca` = `wykladowcy`.`id-wykladowcy`
+ INNER JOIN osrodki ON `osrodki`.`id-osrodek` = `egzaminy`.`id-osrodek`
+ WHERE `osrodki`.`nazwa-o` = "Centrum Informatyczne PL") AS x
+ SET `e`.`id-wykladowca` = "0004"
+ WHERE e.`id-wykladowca` = x.`id-wykladowcy`
+
+Zad10
+UPDATE egzaminy e, 
+(SELECT `id-wykladowcy`, egzaminy.`id-student`FROM wykladowcy
+ INNER JOIN egzaminy ON egzaminy.`id-wykladowca` = wykladowcy.`id-wykladowcy`
+ INNER JOIN osrodki ON `osrodki`.`id-osrodek` = `egzaminy`.`id-osrodek`
+ WHERE `osrodki`.`nazwa-o` = "Centrum Informatyczne PL") AS x
+ SET `e`.`data` = NOW()
+ WHERE e.`id-student` = x.`id-student` 
+ AND `e`.`id-wykladowca` = x.`id-wykladowcy`
+ AND e.zdal = 1
+
+Zad11
+ALTER TABLE studenci
+ADD COLUMN numerIndeksu varchar(15) DEFAULT 'brak';
+
+// Przypisanie jakiejs wartosci ma³o istotne
+UPDATE studenci
+SET `nr-dyplomu` = "100"
+
+UPDATE studenci s, (
+SELECT `id-student`, `nr-dyplomu` FROM studenci
+    WHERE `id-student` = ANY(
+        SELECT `id-student` FROM egzaminy 
+        INNER JOIN osrodki  ON `osrodki`.`id-osrodek` = `egzaminy`.`id-osrodek`
+        WHERE egzaminy.zdal = 1
+        AND `osrodki`.`nazwa-o` = "Instytut Informatyki PL"
+        GROUP BY `id-student`)) x
+SET numerIndeksu = x.`nr-dyplomu`
+WHERE `s`.`id-student` = x.`id-student`
+
+Zad12
+// zmieni³em id-wykladowcy varchar(4) na varchar(8) aby moc sobie zapisac id-studentow
+INSERT INTO wykladowcy(`id-wykladowcy`, nazwisko, imie, `kod-poczta`, miasto, ulica, numer, telefon, fax, `e-mail`)
+SELECT `studenci`.`id-student`, nazwisko, imie, `kod-poczta`, miasto, ulica,  numer, tel, fax, `e-mail` FROM studenci
+JOIN egzaminy ON `egzaminy`.`id-student` = `studenci`.`id-student`
+WHERE egzaminy.zdal = 1 
+GROUP BY egzaminy.`id-student`
+HAVING COUNT(`egzaminy`.`zdal`) = ( SELECT COUNT(`egzaminy`.zdal) AS liczba FROM egzaminy
+                 WHERE zdal = 1
+                 GROUP BY `id-student`
+                ORDER BY liczba DESC 
+                 LIMIT 1 )
+
+Zad13
+CREATE TABLE Kopia_przedmioty(
+`id-przedmiot` tinyint(3),
+`nazwa-p`  varchar(40),
+`opis` varchar(200)
+);
+
+INSERT INTO kopia_przedmioty
+SELECT * FROM przedmioty
+WHERE `id-przedmiot` < 10
+
+Zad14
+//Nie ma takiej kolumny jak dataUrodzin wiec dodaje ja
+ALTER TABLE wykladowcy
+ADD COLUMN dataUrodzin date
+
+UPDATE wykladowcy w, (
+    SELECT MIN(data) as pierwszy FROM egzaminy) AS xxx
+    SET w.dataUrodzin = xxx.pierwszy
+    WHERE `w`.`nazwisko` = "Bond"
